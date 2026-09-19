@@ -116,20 +116,20 @@ function LevelUpCeremony({
           initial={{ scale: 0.4, opacity: 0.7 }}
           animate={{ scale: 2.4, opacity: 0 }}
           transition={{ duration: 1.4, delay: i * 0.35, ease: "easeOut" }}
-          className="pointer-events-none absolute inset-0 m-auto size-24 rounded-full border-2 border-gold/50"
+          className="pointer-events-none absolute inset-0 m-auto size-24 rounded-full border-2 border-amethyst/50"
         />
       ))}
       <div className="relative">
-        <div className="animate-pulse-glow mx-auto flex size-16 items-center justify-center rounded-full border-2 border-gold/60 bg-gold/15">
-          <Zap className="size-8 text-gold" />
+        <div className="animate-pulse-glow mx-auto flex size-16 items-center justify-center rounded-full border-2 border-amethyst/60 bg-amethyst/15">
+          <Zap className="size-8 text-amethyst" />
         </div>
-        <p className="font-display mt-4 text-xs font-bold tracking-[0.35em] text-azure-bright">
+        <p className="font-display mt-4 text-xs font-bold tracking-[0.35em] text-frost-bright">
           [ SYSTEM MESSAGE ]
         </p>
-        <p className="font-display text-gradient-gold mt-2 text-3xl font-black text-shadow-gold">
+        <p className="font-display text-gradient-amethyst mt-2 text-3xl font-black text-shadow-amethyst">
           LEVEL UP!
         </p>
-        <p className="tnum mt-1 font-display text-5xl font-black text-gold-bright">
+        <p className="tnum mt-1 font-display text-5xl font-black text-amethyst-bright">
           {shownLevel}
         </p>
         {rankBadge && payload.rankUp && (
@@ -150,7 +150,7 @@ function LevelUpCeremony({
         )}
         <Button
           onClick={onClose}
-          className="mt-5 w-full bg-gradient-to-r from-gold/90 via-gold-bright to-gold/90 font-bold text-background hover:opacity-95"
+          className="mt-5 w-full bg-gradient-to-r from-amethyst/90 via-amethyst-bright to-amethyst/90 font-bold text-background hover:opacity-95"
         >
           CONTINUE
         </Button>
@@ -315,14 +315,14 @@ export default function Dashboard() {
   return (
     <main className="grid-bg min-h-screen pb-16">
       {/* ------------------------------------------------- Top bar */}
-      <header className="sticky top-0 z-30 border-b border-gold/15 bg-background/85 backdrop-blur">
+      <header className="sticky top-0 z-30 border-b border-amethyst/15 bg-background/85 backdrop-blur">
         <div className="mx-auto flex w-full max-w-3xl items-center justify-between gap-3 px-4 py-3">
           <div className="flex min-w-0 items-center gap-2.5">
-            <div className="flex size-8 shrink-0 items-center justify-center rounded-md border border-gold/30 bg-gold/10">
+            <div className="flex size-8 shrink-0 items-center justify-center rounded-md border border-amethyst/30 bg-amethyst/10">
               {ClassIcon ? (
                 <ClassIcon className={`size-4 ${meta?.iconClass}`} />
               ) : (
-                <Zap className="size-4 text-gold" />
+                <Zap className="size-4 text-amethyst" />
               )}
             </div>
             <div className="min-w-0">
@@ -337,7 +337,7 @@ export default function Dashboard() {
           <div className="flex shrink-0 items-center gap-1.5">
             <AlertDialog open={resetOpen} onOpenChange={setResetOpen}>
               <AlertDialogTrigger asChild>
-                <Button variant="ghost" size="icon" className="size-8 text-muted-foreground hover:text-crimson">
+                <Button variant="ghost" size="icon" className="size-8 text-muted-foreground hover:text-ember">
                   <RotateCcw className="size-4" />
                 </Button>
               </AlertDialogTrigger>
@@ -352,7 +352,7 @@ export default function Dashboard() {
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
                   <AlertDialogAction
                     onClick={handleReset}
-                    className="bg-crimson text-white hover:bg-crimson/90"
+                    className="bg-ember text-white hover:bg-ember/90"
                   >
                     Erase progress
                   </AlertDialogAction>
@@ -399,7 +399,7 @@ export default function Dashboard() {
                 {rank.name}
               </span>
               <p className="mt-1.5 flex items-baseline justify-end gap-1">
-                <span className="tnum font-display text-2xl leading-none font-black text-gold-bright text-shadow-gold sm:text-3xl">
+                <span className="tnum font-display text-2xl leading-none font-black text-amethyst-bright text-shadow-amethyst sm:text-3xl">
                   {animatedLevel}
                 </span>
                 <span className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground">
@@ -412,11 +412,11 @@ export default function Dashboard() {
           <div className="mt-5">
             <div className="mb-1.5 flex justify-between text-[11px] font-semibold">
               <span className="tracking-[0.2em] text-muted-foreground">EXPERIENCE</span>
-              <span className="text-gold">
+              <span className="text-amethyst">
                 {level.xpIntoLevel.toLocaleString()} / {level.xpNeeded.toLocaleString()} XP
               </span>
             </div>
-            <div className="relative h-3 overflow-hidden rounded-full bg-background/80 ring-1 ring-gold/25">
+            <div className="relative h-3 overflow-hidden rounded-full bg-background/80 ring-1 ring-amethyst/25">
               <div
                 className="xp-bar-fill relative h-full overflow-hidden rounded-full transition-[width] duration-700 ease-out"
                 style={{ width: `${xpPct}%` }}
@@ -465,10 +465,10 @@ export default function Dashboard() {
                       l === 0
                         ? "bg-background/70 ring-1 ring-border/60"
                         : l === 1
-                          ? "bg-gold/20"
+                          ? "bg-amethyst/20"
                           : l === 2
-                            ? "bg-gold/45"
-                            : "bg-gold/80"
+                            ? "bg-amethyst/45"
+                            : "bg-amethyst/80"
                     }`}
                   />
                 ))}
@@ -484,11 +484,11 @@ export default function Dashboard() {
                     day.level === 0
                       ? "bg-background/70 ring-1 ring-border/50"
                       : day.level === 1
-                        ? "bg-gold/20"
+                        ? "bg-amethyst/20"
                         : day.level === 2
-                          ? "bg-gold/45"
-                          : "bg-gold/80 shadow-[0_0_6px_-1px] shadow-gold/60"
-                  } ${day.key === "today" ? "ring-2 ring-gold/60 ring-offset-1 ring-offset-background" : ""}`}
+                          ? "bg-amethyst/45"
+                          : "bg-amethyst/80 shadow-[0_0_6px_-1px] shadow-amethyst/60"
+                  } ${day.key === "today" ? "ring-2 ring-amethyst/60 ring-offset-1 ring-offset-background" : ""}`}
                 />
               ))}
             </div>
@@ -517,8 +517,8 @@ export default function Dashboard() {
 
         <section className="panel rounded-xl p-4 sm:p-6">
           <div className="flex items-center gap-2.5">
-            <div className="flex size-8 items-center justify-center rounded-md border border-azure/30 bg-azure/10">
-              <ScrollText className="size-4 text-azure" />
+            <div className="flex size-8 items-center justify-center rounded-md border border-frost/30 bg-frost/10">
+              <ScrollText className="size-4 text-frost" />
             </div>
             <div>
               <h2 className="font-display text-base font-bold tracking-wide sm:text-lg">
@@ -538,7 +538,7 @@ export default function Dashboard() {
                   key={r.name}
                   className={`flex items-center gap-3 rounded-lg border px-3 py-2 transition-all ${
                     isCurrent
-                      ? `${r.badgeClass} shadow-[0_0_16px_-8px] shadow-gold/60`
+                      ? `${r.badgeClass} shadow-[0_0_16px_-8px] shadow-amethyst/60`
                       : "border-border/50 bg-background/40"
                   }`}
                 >
@@ -553,7 +553,7 @@ export default function Dashboard() {
                   </span>
                   <span
                     className={`size-1.5 rounded-full ${
-                      reached ? "bg-gold" : "bg-muted-foreground/30"
+                      reached ? "bg-amethyst" : "bg-muted-foreground/30"
                     }`}
                   />
                 </li>
@@ -570,7 +570,7 @@ export default function Dashboard() {
 
       {/* ------------------------------------------------- Level-up dialog */}
       <Dialog open={levelUp !== null} onOpenChange={(open) => !open && setLevelUp(null)}>
-        <DialogContent className="panel panel-glow corner-frame max-w-xs rounded-xl border-gold/40 text-center sm:max-w-sm">
+        <DialogContent className="panel panel-glow corner-frame max-w-xs rounded-xl border-amethyst/40 text-center sm:max-w-sm">
           <DialogTitle className="sr-only">Level up</DialogTitle>
           <DialogDescription className="sr-only">
             You reached level {levelUp?.newLevel}

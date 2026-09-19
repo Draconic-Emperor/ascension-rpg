@@ -16,8 +16,8 @@ export function LeaderboardPanel({ save }: LeaderboardPanelProps) {
   return (
     <section className="panel corner-frame rounded-xl p-4 sm:p-6">
       <div className="flex items-center gap-2.5">
-        <div className="flex size-8 items-center justify-center rounded-md border border-azure/30 bg-azure/10">
-          <Trophy className="size-4 text-azure" />
+        <div className="flex size-8 items-center justify-center rounded-md border border-frost/30 bg-frost/10">
+          <Trophy className="size-4 text-frost" />
         </div>
         <div>
           <h2 className="font-display text-base font-bold tracking-wide sm:text-lg">
@@ -27,7 +27,7 @@ export function LeaderboardPanel({ save }: LeaderboardPanelProps) {
             Weekly standings · global mock
           </p>
         </div>
-        <span className="ml-auto flex items-center gap-1.5 rounded-md border border-gold/30 bg-gold/10 px-2.5 py-1 text-[11px] font-bold text-gold">
+        <span className="ml-auto flex items-center gap-1.5 rounded-md border border-amethyst/30 bg-amethyst/10 px-2.5 py-1 text-[11px] font-bold text-amethyst">
           <Crown className="size-3.5" />#{userRank}
         </span>
       </div>
@@ -42,7 +42,7 @@ export function LeaderboardPanel({ save }: LeaderboardPanelProps) {
               className={cn(
                 "flex items-center gap-3 rounded-lg border px-3 py-2 transition-all",
                 row.isUser
-                  ? "border-gold/50 bg-gold/10 shadow-[0_0_16px_-8px] shadow-gold/60"
+                  ? "border-amethyst/50 bg-amethyst/10 shadow-[0_0_16px_-8px] shadow-amethyst/60"
                   : "border-border/50 bg-background/40",
               )}
             >
@@ -50,7 +50,7 @@ export function LeaderboardPanel({ save }: LeaderboardPanelProps) {
                 className={cn(
                   "w-6 shrink-0 text-center text-sm font-black",
                   i === 0
-                    ? "text-gold"
+                    ? "text-amethyst"
                     : i === 1
                       ? "text-slate-300"
                       : i === 2
@@ -67,7 +67,7 @@ export function LeaderboardPanel({ save }: LeaderboardPanelProps) {
                 <p
                   className={cn(
                     "truncate text-sm font-semibold",
-                    row.isUser && "text-gold",
+                    row.isUser && "text-amethyst",
                   )}
                 >
                   {row.name}
@@ -77,7 +77,7 @@ export function LeaderboardPanel({ save }: LeaderboardPanelProps) {
               <span className="shrink-0 text-[11px] font-semibold text-muted-foreground">
                 LV.{row.level}
               </span>
-              <span className="w-16 shrink-0 text-right text-[11px] font-bold text-azure-bright">
+              <span className="w-16 shrink-0 text-right text-[11px] font-bold text-frost-bright">
                 {row.xp.toLocaleString()} XP
               </span>
             </div>

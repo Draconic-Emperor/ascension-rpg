@@ -53,8 +53,8 @@ export function QuestBoard({
     <section className="panel corner-frame rounded-xl p-4 sm:p-6">
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
-          <div className="flex size-8 items-center justify-center rounded-md border border-crimson/30 bg-crimson/10">
-            <Flame className="size-4 text-crimson" />
+          <div className="flex size-8 items-center justify-center rounded-md border border-ember/30 bg-ember/10">
+            <Flame className="size-4 text-ember" />
           </div>
           <div>
             <h2 className="font-display text-base font-bold tracking-wide sm:text-lg">
@@ -70,7 +70,7 @@ export function QuestBoard({
           size="sm"
           variant="outline"
           onClick={() => setAdding((v) => !v)}
-          className="shrink-0 gap-1 border-gold/30 bg-gold/10 text-xs font-semibold text-gold hover:bg-gold/20"
+          className="shrink-0 gap-1 border-amethyst/30 bg-amethyst/10 text-xs font-semibold text-amethyst hover:bg-amethyst/20"
         >
           {adding ? <Minus className="size-3.5" /> : <Plus className="size-3.5" />}
           New Quest
@@ -78,7 +78,7 @@ export function QuestBoard({
       </div>
 
       {adding && (
-        <div className="mt-4 rounded-lg border border-gold/20 bg-background/50 p-3">
+        <div className="mt-4 rounded-lg border border-amethyst/20 bg-background/50 p-3">
           <Input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -87,7 +87,7 @@ export function QuestBoard({
             }}
             placeholder="Quest title — e.g. 100 push-ups"
             maxLength={80}
-            className="h-9 border-gold/20 bg-background/60"
+            className="h-9 border-amethyst/20 bg-background/60"
           />
           <div className="mt-2.5 flex flex-wrap items-center gap-2">
             {DIFFICULTIES.map((d) => {
@@ -113,7 +113,7 @@ export function QuestBoard({
               size="sm"
               onClick={submit}
               disabled={!title.trim()}
-              className="ml-auto bg-gradient-to-r from-gold/90 via-gold-bright to-gold/90 text-background hover:opacity-95"
+              className="ml-auto bg-gradient-to-r from-amethyst/90 via-amethyst-bright to-amethyst/90 text-background hover:opacity-95"
             >
               Add Quest
             </Button>
@@ -137,7 +137,7 @@ export function QuestBoard({
                 className={cn(
                   "group flex items-center gap-3 rounded-lg border px-3 py-2.5 transition-all",
                   done
-                    ? "border-gold/25 bg-gold/5"
+                    ? "border-amethyst/25 bg-amethyst/5"
                     : "border-border/70 bg-background/40",
                 )}
               >
@@ -149,8 +149,8 @@ export function QuestBoard({
                   className={cn(
                     "flex size-6 shrink-0 items-center justify-center rounded-md border transition-all",
                     done
-                      ? "border-gold bg-gold text-background"
-                      : "border-gold/40 bg-transparent hover:bg-gold/20",
+                      ? "border-amethyst bg-amethyst text-background"
+                      : "border-amethyst/40 bg-transparent hover:bg-amethyst/20",
                   )}
                 >
                   {done && <span className="text-xs font-black">✓</span>}
@@ -159,7 +159,7 @@ export function QuestBoard({
                   <p
                     className={cn(
                       "truncate text-sm font-semibold",
-                      done && "text-muted-foreground line-through decoration-gold/50",
+                      done && "text-muted-foreground line-through decoration-amethyst/50",
                     )}
                   >
                     {quest.title}
@@ -180,14 +180,14 @@ export function QuestBoard({
                     )}
                   </div>
                 </div>
-                <span className="shrink-0 text-xs font-bold text-gold">
+                <span className="shrink-0 text-xs font-bold text-amethyst">
                   +{DIFFICULTY_XP[quest.difficulty]} XP
                 </span>
                 <button
                   type="button"
                   aria-label="Delete quest"
                   onClick={() => onRemove(quest.id)}
-                  className="shrink-0 text-muted-foreground/50 transition-colors hover:text-crimson"
+                  className="shrink-0 text-muted-foreground/50 transition-colors hover:text-ember"
                 >
                   <Trash2 className="size-3.5" />
                 </button>

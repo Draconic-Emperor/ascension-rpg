@@ -25,7 +25,7 @@ function spawn(w: number, h: number, fromBottom = true): Particle {
     vx: (Math.random() - 0.5) * 0.18,
     vy: -(0.12 + Math.random() * 0.3),
     size: 0.8 + Math.random() * 1.8,
-    hue: 38 + Math.random() * 14,
+    hue: 262 + Math.random() * 24,
     alpha: 0.25 + Math.random() * 0.45,
     phase: Math.random() * Math.PI * 2,
     twinkle: 0.5 + Math.random() * 1.5,
@@ -33,7 +33,7 @@ function spawn(w: number, h: number, fromBottom = true): Particle {
 }
 
 /**
- * A fixed, pointer-transparent canvas of drifting golden embers.
+ * A fixed, pointer-transparent canvas of drifting amethyst embers.
  * Renders nothing when the user prefers reduced motion.
  */
 export default function EmberField({ intensity = 1, className }: EmberFieldProps) {
@@ -76,7 +76,7 @@ export default function EmberField({ intensity = 1, className }: EmberFieldProps
         const alpha = Math.max(0, p.alpha * (0.65 + 0.35 * Math.sin(p.phase)));
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `hsla(${p.hue}, 92%, 62%, ${alpha})`;
+        ctx.fillStyle = `hsla(${p.hue}, 85%, 72%, ${alpha})`;
         ctx.fill();
       }
       raf = requestAnimationFrame(step);

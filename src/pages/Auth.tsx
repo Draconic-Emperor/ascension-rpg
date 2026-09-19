@@ -109,11 +109,11 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
       <EmberField intensity={0.7} />
       <div
         aria-hidden
-        className="pointer-events-none fixed -top-32 left-1/2 z-0 size-[420px] -translate-x-1/2 rounded-full bg-gold/10 blur-[110px]"
+        className="pointer-events-none fixed -top-32 left-1/2 z-0 size-[420px] -translate-x-1/2 rounded-full bg-amethyst/10 blur-[110px]"
       />
       <div
         aria-hidden
-        className="pointer-events-none fixed bottom-[-100px] right-[-120px] z-0 size-[340px] rounded-full bg-crimson/10 blur-[110px]"
+        className="pointer-events-none fixed bottom-[-100px] right-[-120px] z-0 size-[340px] rounded-full bg-ember/10 blur-[110px]"
       />
 
       <div className="relative z-10 flex flex-1 items-center justify-center px-4 py-10">
@@ -166,7 +166,7 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                     </Button>
                   </div>
                   {error && (
-                    <p className="mt-2 text-sm text-crimson">{error}</p>
+                    <p className="mt-2 text-sm text-ember">{error}</p>
                   )}
 
                   <div className="mt-4">
@@ -198,8 +198,8 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
           ) : (
             <>
               <CardHeader className="mt-4 text-center">
-                <div className="mx-auto mb-2 flex size-10 items-center justify-center rounded-full border border-gold/30 bg-gold/10">
-                  <Sparkles className="size-4.5 text-gold" />
+                <div className="mx-auto mb-2 flex size-10 items-center justify-center rounded-full border border-amethyst/30 bg-amethyst/10">
+                  <Sparkles className="size-4.5 text-amethyst" />
                 </div>
                 <CardTitle className="font-display">Verify Identity</CardTitle>
                 <CardDescription>
@@ -234,7 +234,7 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                     </InputOTP>
                   </div>
                   {error && (
-                    <p className="mt-2 text-center text-sm text-crimson">
+                    <p className="mt-2 text-center text-sm text-ember">
                       {error}
                     </p>
                   )}

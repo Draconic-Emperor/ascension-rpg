@@ -36,13 +36,13 @@ const CLASS_CARDS: { name: string; icon: LucideIcon; chip: string; blurb: string
   {
     name: "Murim Warrior",
     icon: Swords,
-    chip: "text-crimson",
+    chip: "text-ember",
     blurb: "The blade remembers every dawn of training.",
   },
   {
     name: "Cyber Knight",
     icon: Bot,
-    chip: "text-azure",
+    chip: "text-frost",
     blurb: "Chrome chassis. Unbreakable code of honor.",
   },
   {
@@ -54,7 +54,7 @@ const CLASS_CARDS: { name: string; icon: LucideIcon; chip: string; blurb: string
   {
     name: "Hunter",
     icon: Crosshair,
-    chip: "text-gold",
+    chip: "text-teal-300",
     blurb: "Every gate hides treasure. You take both.",
   },
   {
@@ -75,25 +75,25 @@ const FEATURES: {
     icon: ScrollText,
     title: "Daily Quest System",
     body: "Forge your own quest log. Easy, Medium, and Hard raids pay 10, 25, and 50 XP — every single day.",
-    accent: "text-gold",
+    accent: "text-amethyst",
   },
   {
     icon: Zap,
     title: "XP & Ascension Ranks",
     body: "Levels rise automatically as XP flows in. Climb from Novice through Adept, Elite, and Master to Legend.",
-    accent: "text-azure",
+    accent: "text-frost",
   },
   {
     icon: Flame,
     title: "Login Streaks & Rewards",
     body: "Return daily to grow your streak. Milestones at 3, 7, 14, and 30 days unlock XP caches — Monarch's Core awaits.",
-    accent: "text-crimson",
+    accent: "text-ember",
   },
   {
     icon: Trophy,
     title: "Achievement Codex",
     body: "First Quest. 7-Day Streak. 30-Day Streak. 100 Quests Completed. Proof, carved into your record.",
-    accent: "text-gold",
+    accent: "text-amethyst",
   },
 ];
 
@@ -113,7 +113,7 @@ const TOTAL_QUESTS = MOCK_HUNTERS.reduce((sum, h) => sum + Math.round(h.xp / 25)
 
 function SystemBadge({ icon: Icon, label }: { icon: LucideIcon; label: string }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-gold/25 bg-gold/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-gold">
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-amethyst/25 bg-amethyst/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-amethyst">
       <Icon className="size-3.5" />
       {label}
     </span>
@@ -145,7 +145,7 @@ function SystemNotice() {
     return () => window.clearInterval(id);
   }, []);
   return (
-    <div className="mt-4 h-9 overflow-hidden rounded-md border border-azure/25 bg-azure/10 px-3 py-2 text-center text-xs font-medium text-azure-bright">
+    <div className="mt-4 h-9 overflow-hidden rounded-md border border-frost/25 bg-frost/10 px-3 py-2 text-center text-xs font-medium text-frost-bright">
       <AnimatePresence mode="wait">
         <motion.p
           key={index}
@@ -177,15 +177,15 @@ export default function Landing() {
       <EmberField />
       <div
         aria-hidden
-        className="pointer-events-none fixed -top-32 left-1/2 z-0 size-[480px] -translate-x-1/2 rounded-full bg-gold/10 blur-[120px]"
+        className="pointer-events-none fixed -top-32 left-1/2 z-0 size-[480px] -translate-x-1/2 rounded-full bg-amethyst/10 blur-[120px]"
       />
       <div
         aria-hidden
-        className="pointer-events-none fixed right-[-140px] top-1/3 z-0 size-[380px] rounded-full bg-crimson/10 blur-[120px]"
+        className="pointer-events-none fixed right-[-140px] top-1/3 z-0 size-[380px] rounded-full bg-ember/10 blur-[120px]"
       />
       <div
         aria-hidden
-        className="pointer-events-none fixed left-[-140px] bottom-[-80px] z-0 size-[380px] rounded-full bg-azure/10 blur-[120px]"
+        className="pointer-events-none fixed left-[-140px] bottom-[-80px] z-0 size-[380px] rounded-full bg-frost/10 blur-[120px]"
       />
       <div aria-hidden className="vignette pointer-events-none fixed inset-0 z-[2]" />
 
@@ -199,7 +199,7 @@ export default function Landing() {
         >
           <a href="/" className="flex items-center gap-2.5">
             <div className="corner-frame panel flex size-9 items-center justify-center rounded-md">
-              <Sparkles className="size-4.5 text-gold" />
+              <Sparkles className="size-4.5 text-amethyst" />
             </div>
             <span className="font-display text-lg font-bold tracking-[0.22em] text-foreground">
               ASCENSION
@@ -207,7 +207,7 @@ export default function Landing() {
           </a>
           <a
             href={dashboardHref}
-            className="rounded-md border border-gold/30 bg-gold/10 px-4 py-1.5 text-sm font-semibold text-gold transition-all hover:bg-gold/20 hover:shadow-[0_0_18px_-4px] hover:shadow-gold/40"
+            className="rounded-md border border-amethyst/30 bg-amethyst/10 px-4 py-1.5 text-sm font-semibold text-amethyst transition-all hover:bg-amethyst/20 hover:shadow-[0_0_18px_-4px] hover:shadow-amethyst/40"
           >
             {isAuthenticated ? "Dashboard" : "Sign in"}
           </a>
@@ -227,9 +227,9 @@ export default function Landing() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="font-display mt-6 text-4xl leading-tight font-extrabold text-shadow-gold sm:text-6xl"
+            className="font-display mt-6 text-4xl leading-tight font-extrabold text-shadow-amethyst sm:text-6xl"
           >
-            <span className="text-gradient-gold">ASCEND</span>
+            <span className="text-gradient-amethyst">ASCEND</span>
             <br />
             <span className="text-foreground">OR REMAIN ORDINARY</span>
           </motion.h1>
@@ -243,7 +243,7 @@ export default function Landing() {
             A hunter-system progression app for the disciplined. Complete daily
             quests, bank XP, hold your streak, and climb from{" "}
             <span className="font-semibold text-foreground">Novice</span> to{" "}
-            <span className="font-semibold text-gold">Legend</span>.
+            <span className="font-semibold text-amethyst">Legend</span>.
           </motion.p>
 
           <motion.div
@@ -254,7 +254,7 @@ export default function Landing() {
           >
             <a
               href={dashboardHref}
-              className="animate-pulse-glow group inline-flex h-11 w-full items-center justify-center gap-2 rounded-md bg-gradient-to-r from-gold/90 via-gold-bright to-gold/90 px-7 text-sm font-bold tracking-wide text-background transition-transform hover:scale-[1.02] sm:w-auto"
+              className="animate-pulse-glow group inline-flex h-11 w-full items-center justify-center gap-2 rounded-md bg-gradient-to-r from-amethyst/90 via-amethyst-bright to-amethyst/90 px-7 text-sm font-bold tracking-wide text-background transition-transform hover:scale-[1.02] sm:w-auto"
             >
               {primaryLabel}
               <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
@@ -275,23 +275,23 @@ export default function Landing() {
             className="animate-float-slow panel panel-glow corner-frame mt-14 w-full max-w-md rounded-lg p-5 text-left"
           >
             <div className="mb-4 flex items-center justify-between">
-              <span className="font-display text-xs font-bold tracking-[0.3em] text-gold">
+              <span className="font-display text-xs font-bold tracking-[0.3em] text-amethyst">
                 STATUS WINDOW
               </span>
-              <span className="flex items-center gap-1.5 rounded border border-gold/30 bg-gold/10 px-1.5 py-0.5 text-[10px] font-semibold text-gold">
-                <span className="size-1.5 animate-pulse rounded-full bg-gold" />
+              <span className="flex items-center gap-1.5 rounded border border-amethyst/30 bg-amethyst/10 px-1.5 py-0.5 text-[10px] font-semibold text-amethyst">
+                <span className="size-1.5 animate-pulse rounded-full bg-amethyst" />
                 LIVE
               </span>
             </div>
             <p className="font-display text-lg font-bold text-foreground">
-              Hunter — <span className="text-crimson">Murim Warrior</span>
+              Hunter — <span className="text-ember">Murim Warrior</span>
             </p>
             <div className="mt-3">
               <div className="mb-1 flex justify-between text-[11px] text-muted-foreground">
                 <span>XP</span>
                 <span className="tnum">35 / 100</span>
               </div>
-              <div className="relative h-2.5 overflow-hidden rounded-full bg-background/80 ring-1 ring-gold/20">
+              <div className="relative h-2.5 overflow-hidden rounded-full bg-background/80 ring-1 ring-amethyst/20">
                 <div className="shimmer xp-bar-fill relative h-full w-[35%] rounded-full" />
               </div>
             </div>
@@ -319,7 +319,7 @@ export default function Landing() {
         </section>
 
         {/* ------------------------------------------------- Ticker marquee */}
-        <div className="relative -mx-4 mb-20 overflow-hidden border-y border-gold/15 bg-background/40 py-2.5 sm:-mx-6">
+        <div className="relative -mx-4 mb-20 overflow-hidden border-y border-amethyst/15 bg-background/40 py-2.5 sm:-mx-6">
           <div className="animate-marquee flex w-max gap-10 whitespace-nowrap">
             {[0, 1].map((copy) => (
               <div key={copy} className="flex gap-10" aria-hidden={copy === 1}>
@@ -328,7 +328,7 @@ export default function Landing() {
                     key={item}
                     className="flex items-center gap-2 text-[11px] font-semibold tracking-[0.14em] text-muted-foreground"
                   >
-                    <Zap className="size-3 text-gold" />
+                    <Zap className="size-3 text-amethyst" />
                     {item}
                   </span>
                 ))}
@@ -346,9 +346,9 @@ export default function Landing() {
             transition={{ duration: 0.5 }}
             className="panel corner-frame grid grid-cols-3 gap-2 rounded-lg px-4 py-6"
           >
-            <StatCounter value={MOCK_HUNTERS.length + 1} label="HUNTERS ENROLLED" accent="text-gold-bright" />
-            <StatCounter value={TOTAL_QUESTS} label="QUESTS CLEARED" accent="text-crimson-bright" />
-            <StatCounter value={5} label="RANKS TO LEGEND" accent="text-azure-bright" />
+            <StatCounter value={MOCK_HUNTERS.length + 1} label="HUNTERS ENROLLED" accent="text-amethyst-bright" />
+            <StatCounter value={TOTAL_QUESTS} label="QUESTS CLEARED" accent="text-ember-bright" />
+            <StatCounter value={5} label="RANKS TO LEGEND" accent="text-frost-bright" />
           </motion.div>
         </section>
 
@@ -401,7 +401,7 @@ export default function Landing() {
                 className="panel rounded-lg p-5 transition-transform hover:-translate-y-0.5"
               >
                 <div className="flex items-center gap-3">
-                  <div className="flex size-9 shrink-0 items-center justify-center rounded-md border border-gold/25 bg-gold/10">
+                  <div className="flex size-9 shrink-0 items-center justify-center rounded-md border border-amethyst/25 bg-amethyst/10">
                     <f.icon className={`size-4.5 ${f.accent}`} />
                   </div>
                   <h3 className="font-display text-base font-bold">{f.title}</h3>
@@ -430,7 +430,7 @@ export default function Landing() {
                   <span
                     className={`flex size-7 shrink-0 items-center justify-center rounded-full border text-xs font-bold ${
                       i === RANK_LADDER.length - 1
-                        ? "border-gold/60 bg-gold/15 text-gold"
+                        ? "border-amethyst/60 bg-amethyst/15 text-amethyst"
                         : "border-border text-muted-foreground"
                     }`}
                   >
@@ -460,13 +460,13 @@ export default function Landing() {
                     key={h.name}
                     className={`flex items-center gap-3 rounded-md border px-3 py-2.5 ${
                       i === 0
-                        ? "border-gold/40 bg-gold/10"
+                        ? "border-amethyst/40 bg-amethyst/10"
                         : "border-border/60 bg-background/40"
                     }`}
                   >
                     <span
                       className={`w-6 text-center text-sm font-bold ${
-                        i === 0 ? "text-gold" : "text-muted-foreground"
+                        i === 0 ? "text-amethyst" : "text-muted-foreground"
                       }`}
                     >
                       {i + 1}
@@ -477,15 +477,15 @@ export default function Landing() {
                         LV. {level}
                       </p>
                     </div>
-                    <span className="tnum text-xs font-semibold text-azure-bright">
+                    <span className="tnum text-xs font-semibold text-frost-bright">
                       {h.xp.toLocaleString()} XP
                     </span>
                   </div>
                 );
               })}
-              <div className="flex items-center gap-3 rounded-md border border-dashed border-gold/30 bg-gold/5 px-3 py-2.5">
-                <span className="w-6 text-center text-sm font-bold text-gold">?</span>
-                <p className="flex-1 text-sm font-semibold text-gold">Your name here</p>
+              <div className="flex items-center gap-3 rounded-md border border-dashed border-amethyst/30 bg-amethyst/5 px-3 py-2.5">
+                <span className="w-6 text-center text-sm font-bold text-amethyst">?</span>
+                <p className="flex-1 text-sm font-semibold text-amethyst">Your name here</p>
                 <span className="text-xs font-semibold text-muted-foreground">LV. 1</span>
               </div>
             </div>
@@ -502,7 +502,7 @@ export default function Landing() {
             transition={{ duration: 0.6 }}
             className="panel panel-glow corner-frame rounded-xl p-8 text-center sm:p-12"
           >
-            <p className="font-display text-xs font-bold tracking-[0.3em] text-crimson">
+            <p className="font-display text-xs font-bold tracking-[0.3em] text-ember">
               [QUEST AVAILABLE]
             </p>
             <h2 className="font-display mt-3 text-2xl font-bold sm:text-4xl">
@@ -514,7 +514,7 @@ export default function Landing() {
             </p>
             <a
               href={dashboardHref}
-              className="group mt-7 inline-flex h-11 items-center justify-center gap-2 rounded-md bg-gradient-to-r from-gold/90 via-gold-bright to-gold/90 px-8 text-sm font-bold tracking-wide text-background transition-transform hover:scale-[1.02]"
+              className="group mt-7 inline-flex h-11 items-center justify-center gap-2 rounded-md bg-gradient-to-r from-amethyst/90 via-amethyst-bright to-amethyst/90 px-8 text-sm font-bold tracking-wide text-background transition-transform hover:scale-[1.02]"
             >
               BEGIN THE ASCENSION
               <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />

@@ -57,9 +57,9 @@ export const CLASSES: ClassMeta[] = [
     epithet: "Blade of the Orthodox Path",
     tagline: "The blade remembers every dawn of training.",
     icon: Swords,
-    iconClass: "text-crimson",
-    frameClass: "border-crimson/40 shadow-[0_0_28px_-6px] shadow-crimson/40",
-    chipClass: "border-crimson/40 bg-crimson/10 text-crimson",
+    iconClass: "text-ember",
+    frameClass: "border-ember/40 shadow-[0_0_28px_-6px] shadow-ember/40",
+    chipClass: "border-ember/40 bg-ember/10 text-ember",
   },
   {
     id: "cyber-knight",
@@ -67,9 +67,9 @@ export const CLASSES: ClassMeta[] = [
     epithet: "Oathbound Protocol",
     tagline: "Chrome chassis. Unbreakable code of honor.",
     icon: Bot,
-    iconClass: "text-azure",
-    frameClass: "border-azure/40 shadow-[0_0_28px_-6px] shadow-azure/40",
-    chipClass: "border-azure/40 bg-azure/10 text-azure",
+    iconClass: "text-frost",
+    frameClass: "border-frost/40 shadow-[0_0_28px_-6px] shadow-frost/40",
+    chipClass: "border-frost/40 bg-frost/10 text-frost",
   },
   {
     id: "mage",
@@ -87,9 +87,9 @@ export const CLASSES: ClassMeta[] = [
     epithet: "Gatebreaker",
     tagline: "Every gate hides treasure. You take both.",
     icon: Crosshair,
-    iconClass: "text-gold",
-    frameClass: "border-gold/40 shadow-[0_0_28px_-6px] shadow-gold/40",
-    chipClass: "border-gold/40 bg-gold/10 text-gold",
+    iconClass: "text-teal-300",
+    frameClass: "border-teal-400/40 shadow-[0_0_28px_-6px] shadow-teal-500/40",
+    chipClass: "border-teal-400/40 bg-teal-400/10 text-teal-300",
   },
   {
     id: "titan",
@@ -127,20 +127,20 @@ export const DIFFICULTY_META: Record<
   easy: {
     label: "Easy",
     letter: "E",
-    chipClass: "border-azure/40 bg-azure/10 text-azure",
-    dotClass: "bg-azure",
+    chipClass: "border-frost/40 bg-frost/10 text-frost",
+    dotClass: "bg-frost",
   },
   medium: {
     label: "Medium",
     letter: "M",
-    chipClass: "border-gold/40 bg-gold/10 text-gold",
-    dotClass: "bg-gold",
+    chipClass: "border-amethyst/40 bg-amethyst/10 text-amethyst",
+    dotClass: "bg-amethyst",
   },
   hard: {
     label: "Hard",
     letter: "H",
-    chipClass: "border-crimson/40 bg-crimson/10 text-crimson",
-    dotClass: "bg-crimson",
+    chipClass: "border-ember/40 bg-ember/10 text-ember",
+    dotClass: "bg-ember",
   },
 };
 
@@ -184,23 +184,23 @@ export const RANKS: RankMeta[] = [
   {
     name: "Adept",
     minLevel: 10,
-    badgeClass: "border-azure/40 bg-azure/10 text-azure",
+    badgeClass: "border-frost/40 bg-frost/10 text-frost",
   },
   {
     name: "Elite",
     minLevel: 20,
-    badgeClass: "border-gold/40 bg-gold/10 text-gold",
+    badgeClass: "border-amethyst/40 bg-amethyst/10 text-amethyst",
   },
   {
     name: "Master",
     minLevel: 30,
-    badgeClass: "border-crimson/40 bg-crimson/10 text-crimson",
+    badgeClass: "border-ember/40 bg-ember/10 text-ember",
   },
   {
     name: "Legend",
     minLevel: 40,
     badgeClass:
-      "border-gold/60 bg-gradient-to-r from-gold/25 via-crimson/25 to-gold/25 text-gold-bright",
+      "border-amethyst/60 bg-gradient-to-r from-amethyst/25 via-ember/25 to-amethyst/25 text-amethyst-bright",
   },
 ];
 

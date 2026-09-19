@@ -16,8 +16,8 @@ export function AchievementsPanel({ save }: AchievementsPanelProps) {
   return (
     <section className="panel corner-frame rounded-xl p-4 sm:p-6">
       <div className="flex items-center gap-2.5">
-        <div className="flex size-8 items-center justify-center rounded-md border border-gold/30 bg-gold/10">
-          <Trophy className="size-4 text-gold" />
+        <div className="flex size-8 items-center justify-center rounded-md border border-amethyst/30 bg-amethyst/10">
+          <Trophy className="size-4 text-amethyst" />
         </div>
         <div>
           <h2 className="font-display text-base font-bold tracking-wide sm:text-lg">
@@ -36,7 +36,7 @@ export function AchievementsPanel({ save }: AchievementsPanelProps) {
             className={cn(
               "flex items-start gap-3 rounded-lg border px-3 py-3 transition-all",
               unlocked
-                ? "border-gold/40 bg-gold/10 shadow-[0_0_18px_-8px] shadow-gold/60"
+                ? "border-amethyst/40 bg-amethyst/10 shadow-[0_0_18px_-8px] shadow-amethyst/60"
                 : "border-border/60 bg-background/40",
             )}
           >
@@ -44,14 +44,14 @@ export function AchievementsPanel({ save }: AchievementsPanelProps) {
               className={cn(
                 "flex size-9 shrink-0 items-center justify-center rounded-md border",
                 unlocked
-                  ? "border-gold/50 bg-gold/15"
+                  ? "border-amethyst/50 bg-amethyst/15"
                   : "border-border/70 bg-background/60 opacity-50 grayscale",
               )}
             >
               <def.icon
                 className={cn(
                   "size-4.5",
-                  unlocked ? "text-gold" : "text-muted-foreground",
+                  unlocked ? "text-amethyst" : "text-muted-foreground",
                 )}
               />
             </div>
@@ -77,7 +77,7 @@ export function AchievementsPanel({ save }: AchievementsPanelProps) {
                   <div
                     className={cn(
                       "h-full rounded-full transition-all",
-                      unlocked ? "bg-gold" : "bg-muted-foreground/40",
+                      unlocked ? "bg-amethyst" : "bg-muted-foreground/40",
                     )}
                     style={{ width: `${pct}%` }}
                   />

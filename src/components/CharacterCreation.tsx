@@ -25,11 +25,11 @@ export function CharacterCreation({ onCreate }: CharacterCreationProps) {
     >
       <div className="panel panel-glow corner-frame rounded-xl p-5 sm:p-8">
         <div className="text-center">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-gold/25 bg-gold/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-gold">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-amethyst/25 bg-amethyst/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-amethyst">
             <Sparkles className="size-3.5" />
             Character Creation
           </span>
-          <h1 className="font-display mt-4 text-2xl font-bold text-shadow-gold sm:text-3xl">
+          <h1 className="font-display mt-4 text-2xl font-bold text-shadow-amethyst sm:text-3xl">
             [ THE SYSTEM ASKS ]
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
@@ -55,7 +55,7 @@ export function CharacterCreation({ onCreate }: CharacterCreationProps) {
             autoFocus
             placeholder="e.g. Jin-Woo"
             maxLength={24}
-            className="mt-2 h-11 border-gold/20 bg-background/60 text-base focus-visible:ring-gold/40"
+            className="mt-2 h-11 border-amethyst/20 bg-background/60 text-base focus-visible:ring-amethyst/40"
           />
         </div>
 
@@ -75,14 +75,14 @@ export function CharacterCreation({ onCreate }: CharacterCreationProps) {
                     "group relative rounded-lg border bg-background/50 p-3 text-left transition-all duration-200 hover:-translate-y-0.5",
                     active
                       ? c.frameClass
-                      : "border-border/70 hover:border-gold/30 hover:bg-accent/40",
+                      : "border-border/70 hover:border-amethyst/30 hover:bg-accent/40",
                   )}
                 >
                   {active && (
                     <span
                       className={cn(
                         "absolute -top-1.5 -right-1.5 flex size-5 items-center justify-center rounded-full border-2 border-background",
-                        "bg-gold text-background",
+                        "bg-amethyst text-background",
                       )}
                     >
                       <Check className="size-3" strokeWidth={3} />
@@ -110,7 +110,7 @@ export function CharacterCreation({ onCreate }: CharacterCreationProps) {
           <motion.p
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
-            className="mt-4 rounded-md border border-azure/25 bg-azure/10 px-3 py-2 text-center text-xs font-medium text-azure-bright"
+            className="mt-4 rounded-md border border-frost/25 bg-frost/10 px-3 py-2 text-center text-xs font-medium text-frost-bright"
           >
             [{CLASSES.find((c) => c.id === selected)?.tagline}]
           </motion.p>
@@ -120,7 +120,7 @@ export function CharacterCreation({ onCreate }: CharacterCreationProps) {
           type="button"
           disabled={!canCreate}
           onClick={() => selected && onCreate(name, selected)}
-          className="mt-6 h-11 w-full bg-gradient-to-r from-gold/90 via-gold-bright to-gold/90 text-sm font-bold tracking-wide text-background hover:opacity-95"
+          className="mt-6 h-11 w-full bg-gradient-to-r from-amethyst/90 via-amethyst-bright to-amethyst/90 text-sm font-bold tracking-wide text-background hover:opacity-95"
         >
           AWAKEN — BEGIN THE ASCENT
         </Button>

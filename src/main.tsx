@@ -19,8 +19,8 @@ const NotFound = lazy(() => import("./pages/NotFound.tsx"));
 function RouteLoading() {
   return (
     <div className="grid-bg flex min-h-screen flex-col items-center justify-center gap-3">
-      <div className="animate-pulse-glow flex size-12 items-center justify-center rounded-lg border border-gold/40 bg-gold/10">
-        <span className="font-display text-lg font-black text-gold">A</span>
+      <div className="animate-pulse-glow flex size-12 items-center justify-center rounded-lg border border-amethyst/40 bg-amethyst/10">
+        <span className="font-display text-lg font-black text-amethyst">A</span>
       </div>
       <p className="font-display text-xs tracking-[0.3em] text-muted-foreground">
         CONNECTING TO THE SYSTEM…
