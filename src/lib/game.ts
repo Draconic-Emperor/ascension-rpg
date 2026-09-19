@@ -657,3 +657,38 @@ export function questsClearedToday(save: GameSave): number {
   const today = dateKey();
   return save.quests.filter((q) => q.lastCompletedDate === today).length;
 }
+
+/* ------------------------------------------------------------------ */
+/* Activity heatmap                                                    */
+/* ------------------------------------------------------------------ */
+
+export interface ActivityDay {
+  key: string;
+  /** 0 = inactive, 1 = login only, 2 = 1–2 quests, 3 = 3+ quests */
+  level: 0 | 1 | 2 | 3;
+}
+
+/**
+ * Last `days` local days of activity, oldest first. Best-effort history:
+ * per-quest completion history isn't stored, so past days reflect the
+ * most recent completion of each surviving quest plus the login log.
+ */
+export function activityHeatmap(save: GameSave, days = 35): ActivityDay[] {
+  const today = dateKey();
+  const logins = new Set(save.activeDates);
+  const out: ActivityDay[] = [];
+  for (let i = days - 1; i >= 0; i -= 1) {
+    const key = dateKey(new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() - i));
+    const cleared = save.quests.filter((q) => q.lastCompletedDate === key).length;
+    const active = logins.has(key) || cleared > 0;
+    const level: ActivityDay["level"] = !active
+      ? 0
+      : cleared >= 3
+        ? 3
+        : cleared >= 1
+          ? 2
+          : 1;
+    out.push({ key: key === today ? "today" : key, level });
+  }
+  return out;
+}

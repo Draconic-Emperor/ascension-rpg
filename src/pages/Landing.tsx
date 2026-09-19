@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
   Bot,
@@ -14,6 +14,11 @@ import {
   Zap,
   type LucideIcon,
 } from "lucide-react";
+import { useEffect, useState } from "react";
+import EmberField from "@/components/EmberField";
+import { useAuth } from "@/hooks/use-auth";
+import { useCountUp } from "@/hooks/use-count-up";
+import { levelFromTotalXp, MOCK_HUNTERS } from "@/lib/game";
 
 const fadeUp = {
   initial: { opacity: 0, y: 24 },
@@ -21,14 +26,7 @@ const fadeUp = {
   viewport: { once: true, margin: "-60px" },
 };
 
-interface ClassCard {
-  name: string;
-  icon: LucideIcon;
-  chip: string;
-  blurb: string;
-}
-
-const CLASS_CARDS: ClassCard[] = [
+const CLASS_CARDS: { name: string; icon: LucideIcon; chip: string; blurb: string }[] = [
   {
     name: "Shadow Monarch",
     icon: MoonStar,
@@ -101,13 +99,17 @@ const FEATURES: {
 
 const RANK_LADDER = ["Novice", "Adept", "Elite", "Master", "Legend"];
 
-const MOCK_BOARD = [
-  { rank: 1, name: "NovaStrike", level: 46, xp: "48,200" },
-  { rank: 2, name: "ArcaneLily", level: 43, xp: "41,350" },
-  { rank: 3, name: "VoidWalker", level: 41, xp: "36,900" },
-  { rank: 4, name: "IronWill_77", level: 37, xp: "28,450" },
-  { rank: 5, name: "You", level: 1, xp: "0" },
+const TICKER_ITEMS = [
+  "[NOTICE] Iron Will_77 cleared a Hard raid · +50 XP",
+  "[NOTICE] ArcaneLily reached Level 44",
+  "[SYSTEM] Daily quests reset at midnight — local time",
+  "[NOTICE] VoidWalker claimed Monarch's Core · +1,000 XP",
+  "[SYSTEM] 7-day streak rewards are now claimable",
+  "[NOTICE] EmberKai advanced to Adept rank",
+  "[SYSTEM] The System never sleeps. Neither do legends.",
 ];
+
+const TOTAL_QUESTS = MOCK_HUNTERS.reduce((sum, h) => sum + Math.round(h.xp / 25), 0);
 
 function SystemBadge({ icon: Icon, label }: { icon: LucideIcon; label: string }) {
   return (
@@ -118,10 +120,61 @@ function SystemBadge({ icon: Icon, label }: { icon: LucideIcon; label: string })
   );
 }
 
-export default function Landing() {
+function StatCounter({ value, label, accent }: { value: number; label: string; accent: string }) {
+  const animated = useCountUp(value, 1400);
   return (
-    <div className="grid-bg min-h-screen">
-      {/* Ambient glow orbs */}
+    <div className="text-center">
+      <p className={`tnum font-display text-2xl font-black sm:text-3xl ${accent}`}>
+        {animated.toLocaleString()}
+      </p>
+      <p className="mt-1 text-[10px] font-bold tracking-[0.22em] text-muted-foreground">
+        {label}
+      </p>
+    </div>
+  );
+}
+
+/** Rotating [SYSTEM] notice line under the status window. */
+function SystemNotice() {
+  const [index, setIndex] = useState(0);
+  useEffect(() => {
+    const id = window.setInterval(
+      () => setIndex((i) => (i + 1) % TICKER_ITEMS.length),
+      3600,
+    );
+    return () => window.clearInterval(id);
+  }, []);
+  return (
+    <div className="mt-4 h-9 overflow-hidden rounded-md border border-azure/25 bg-azure/10 px-3 py-2 text-center text-xs font-medium text-azure-bright">
+      <AnimatePresence mode="wait">
+        <motion.p
+          key={index}
+          initial={{ y: 14, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: -14, opacity: 0 }}
+          transition={{ duration: 0.35 }}
+          className="truncate"
+        >
+          {TICKER_ITEMS[index]}
+        </motion.p>
+      </AnimatePresence>
+    </div>
+  );
+}
+
+export default function Landing() {
+  const { isAuthenticated, isLoading } = useAuth();
+  const dashboardHref = "/dashboard";
+  const primaryLabel = isLoading
+    ? "…"
+    : isAuthenticated
+      ? "ENTER THE DASHBOARD"
+      : "AWAKEN YOUR CLASS";
+
+  return (
+    <div className="grid-bg relative min-h-screen overflow-x-clip">
+      {/* Ember particles + ambient glow orbs */}
+      <EmberField />
       <div
         aria-hidden
         className="pointer-events-none fixed -top-32 left-1/2 z-0 size-[480px] -translate-x-1/2 rounded-full bg-gold/10 blur-[120px]"
@@ -134,6 +187,7 @@ export default function Landing() {
         aria-hidden
         className="pointer-events-none fixed left-[-140px] bottom-[-80px] z-0 size-[380px] rounded-full bg-azure/10 blur-[120px]"
       />
+      <div aria-hidden className="vignette pointer-events-none fixed inset-0 z-[2]" />
 
       <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-col px-4 sm:px-6">
         {/* ------------------------------------------------- Nav */}
@@ -143,19 +197,19 @@ export default function Landing() {
           transition={{ duration: 0.5 }}
           className="flex items-center justify-between py-5"
         >
-          <div className="flex items-center gap-2.5">
+          <a href="/" className="flex items-center gap-2.5">
             <div className="corner-frame panel flex size-9 items-center justify-center rounded-md">
               <Sparkles className="size-4.5 text-gold" />
             </div>
             <span className="font-display text-lg font-bold tracking-[0.22em] text-foreground">
               ASCENSION
             </span>
-          </div>
+          </a>
           <a
-            href="/auth"
+            href={dashboardHref}
             className="rounded-md border border-gold/30 bg-gold/10 px-4 py-1.5 text-sm font-semibold text-gold transition-all hover:bg-gold/20 hover:shadow-[0_0_18px_-4px] hover:shadow-gold/40"
           >
-            Sign in
+            {isAuthenticated ? "Dashboard" : "Sign in"}
           </a>
         </motion.header>
 
@@ -199,10 +253,10 @@ export default function Landing() {
             className="mt-8 flex w-full flex-col items-center gap-3 sm:w-auto sm:flex-row"
           >
             <a
-              href="/auth"
+              href={dashboardHref}
               className="animate-pulse-glow group inline-flex h-11 w-full items-center justify-center gap-2 rounded-md bg-gradient-to-r from-gold/90 via-gold-bright to-gold/90 px-7 text-sm font-bold tracking-wide text-background transition-transform hover:scale-[1.02] sm:w-auto"
             >
-              AWAKEN YOUR CLASS
+              {primaryLabel}
               <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
             </a>
             <a
@@ -213,7 +267,7 @@ export default function Landing() {
             </a>
           </motion.div>
 
-          {/* System window mock */}
+          {/* System window mock — now with a ticking pulse */}
           <motion.div
             initial={{ opacity: 0, y: 32 }}
             animate={{ opacity: 1, y: 0 }}
@@ -224,8 +278,9 @@ export default function Landing() {
               <span className="font-display text-xs font-bold tracking-[0.3em] text-gold">
                 STATUS WINDOW
               </span>
-              <span className="rounded border border-gold/30 bg-gold/10 px-1.5 py-0.5 text-[10px] font-semibold text-gold">
-                LV. 1
+              <span className="flex items-center gap-1.5 rounded border border-gold/30 bg-gold/10 px-1.5 py-0.5 text-[10px] font-semibold text-gold">
+                <span className="size-1.5 animate-pulse rounded-full bg-gold" />
+                LIVE
               </span>
             </div>
             <p className="font-display text-lg font-bold text-foreground">
@@ -234,17 +289,17 @@ export default function Landing() {
             <div className="mt-3">
               <div className="mb-1 flex justify-between text-[11px] text-muted-foreground">
                 <span>XP</span>
-                <span>0 / 100</span>
+                <span className="tnum">35 / 100</span>
               </div>
               <div className="relative h-2.5 overflow-hidden rounded-full bg-background/80 ring-1 ring-gold/20">
-                <div className="shimmer xp-bar-fill relative h-full w-1/3 rounded-full" />
+                <div className="shimmer xp-bar-fill relative h-full w-[35%] rounded-full" />
               </div>
             </div>
             <div className="mt-4 grid grid-cols-3 gap-2 text-center">
               {[
                 { k: "RANK", v: "Novice" },
-                { k: "STREAK", v: "1d" },
-                { k: "QUESTS", v: "0" },
+                { k: "STREAK", v: "4d" },
+                { k: "QUESTS", v: "12" },
               ].map((s) => (
                 <div
                   key={s.k}
@@ -259,9 +314,41 @@ export default function Landing() {
                 </div>
               ))}
             </div>
-            <p className="mt-4 rounded-md border border-azure/25 bg-azure/10 px-3 py-2 text-center text-xs font-medium text-azure-bright">
-              [Daily Quest: Begin your first trial — 10 XP]
-            </p>
+            <SystemNotice />
+          </motion.div>
+        </section>
+
+        {/* ------------------------------------------------- Ticker marquee */}
+        <div className="relative -mx-4 mb-20 overflow-hidden border-y border-gold/15 bg-background/40 py-2.5 sm:-mx-6">
+          <div className="animate-marquee flex w-max gap-10 whitespace-nowrap">
+            {[0, 1].map((copy) => (
+              <div key={copy} className="flex gap-10" aria-hidden={copy === 1}>
+                {TICKER_ITEMS.map((item) => (
+                  <span
+                    key={item}
+                    className="flex items-center gap-2 text-[11px] font-semibold tracking-[0.14em] text-muted-foreground"
+                  >
+                    <Zap className="size-3 text-gold" />
+                    {item}
+                  </span>
+                ))}
+              </div>
+            ))}
+          </div>
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-background to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-background to-transparent" />
+        </div>
+
+        {/* ------------------------------------------------- Live stats */}
+        <section className="pb-20">
+          <motion.div
+            {...fadeUp}
+            transition={{ duration: 0.5 }}
+            className="panel corner-frame grid grid-cols-3 gap-2 rounded-lg px-4 py-6"
+          >
+            <StatCounter value={MOCK_HUNTERS.length + 1} label="HUNTERS ENROLLED" accent="text-gold-bright" />
+            <StatCounter value={TOTAL_QUESTS} label="QUESTS CLEARED" accent="text-crimson-bright" />
+            <StatCounter value={5} label="RANKS TO LEGEND" accent="text-azure-bright" />
           </motion.div>
         </section>
 
@@ -285,7 +372,7 @@ export default function Landing() {
                 transition={{ duration: 0.45, delay: i * 0.06 }}
                 className="panel corner-frame group rounded-lg p-4 transition-transform hover:-translate-y-1"
               >
-                <c.icon className={`size-7 ${c.chip}`} />
+                <c.icon className={`size-7 ${c.chip} transition-transform group-hover:scale-110`} />
                 <p className="font-display mt-3 text-sm font-bold tracking-wide sm:text-base">
                   {c.name}
                 </p>
@@ -311,7 +398,7 @@ export default function Landing() {
                 key={f.title}
                 {...fadeUp}
                 transition={{ duration: 0.45, delay: i * 0.06 }}
-                className="panel rounded-lg p-5"
+                className="panel rounded-lg p-5 transition-transform hover:-translate-y-0.5"
               >
                 <div className="flex items-center gap-3">
                   <div className="flex size-9 shrink-0 items-center justify-center rounded-md border border-gold/25 bg-gold/10">
@@ -366,33 +453,41 @@ export default function Landing() {
               Hunter Leaderboard
             </h2>
             <div className="mt-5 space-y-2">
-              {MOCK_BOARD.map((row) => (
-                <div
-                  key={row.name}
-                  className={`flex items-center gap-3 rounded-md border px-3 py-2.5 ${
-                    row.name === "You"
-                      ? "border-gold/40 bg-gold/10"
-                      : "border-border/60 bg-background/40"
-                  }`}
-                >
-                  <span
-                    className={`w-6 text-center text-sm font-bold ${
-                      row.rank <= 3 ? "text-gold" : "text-muted-foreground"
+              {MOCK_HUNTERS.slice(0, 4).map((h, i) => {
+                const level = levelFromTotalXp(h.xp).level;
+                return (
+                  <div
+                    key={h.name}
+                    className={`flex items-center gap-3 rounded-md border px-3 py-2.5 ${
+                      i === 0
+                        ? "border-gold/40 bg-gold/10"
+                        : "border-border/60 bg-background/40"
                     }`}
                   >
-                    {row.rank}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-semibold">{row.name}</p>
-                    <p className="text-[11px] text-muted-foreground">
-                      LV. {row.level}
-                    </p>
+                    <span
+                      className={`w-6 text-center text-sm font-bold ${
+                        i === 0 ? "text-gold" : "text-muted-foreground"
+                      }`}
+                    >
+                      {i + 1}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-semibold">{h.name}</p>
+                      <p className="text-[11px] text-muted-foreground">
+                        LV. {level}
+                      </p>
+                    </div>
+                    <span className="tnum text-xs font-semibold text-azure-bright">
+                      {h.xp.toLocaleString()} XP
+                    </span>
                   </div>
-                  <span className="text-xs font-semibold text-azure-bright">
-                    {row.xp} XP
-                  </span>
-                </div>
-              ))}
+                );
+              })}
+              <div className="flex items-center gap-3 rounded-md border border-dashed border-gold/30 bg-gold/5 px-3 py-2.5">
+                <span className="w-6 text-center text-sm font-bold text-gold">?</span>
+                <p className="flex-1 text-sm font-semibold text-gold">Your name here</p>
+                <span className="text-xs font-semibold text-muted-foreground">LV. 1</span>
+              </div>
             </div>
             <p className="mt-3 text-center text-[11px] text-muted-foreground">
               Standings refresh weekly. Your slot is waiting.
@@ -418,7 +513,7 @@ export default function Landing() {
               becomes a legend. Free — no gates required.
             </p>
             <a
-              href="/auth"
+              href={dashboardHref}
               className="group mt-7 inline-flex h-11 items-center justify-center gap-2 rounded-md bg-gradient-to-r from-gold/90 via-gold-bright to-gold/90 px-8 text-sm font-bold tracking-wide text-background transition-transform hover:scale-[1.02]"
             >
               BEGIN THE ASCENSION

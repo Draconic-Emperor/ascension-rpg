@@ -115,6 +115,7 @@
 
 @theme {
   --font-display: "Cinzel", "Cormorant Garamond", serif;
+  --font-sans: "Rajdhani", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --color-gold: oklch(0.84 0.13 85);
   --color-gold-bright: oklch(0.93 0.13 90);
   --color-crimson: oklch(0.62 0.2 25);
@@ -128,7 +129,7 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background font-sans text-foreground;
   }
   button:not([disabled]),
   [role="button"]:not([disabled]) {
@@ -245,3 +246,64 @@
   );
   animation: shimmer 2.4s infinite;
 }
+
+/* ------------------------------------------------------------------ */
+/* Chrome: scrollbar, selection, numerals                              */
+/* ------------------------------------------------------------------ */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: oklch(0.84 0.13 85 / 28%) transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: oklch(0.84 0.13 85 / 25%);
+  border-radius: 999px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.84 0.13 85 / 45%);
+}
+
+::selection {
+  background: oklch(0.84 0.13 85 / 35%);
+  color: oklch(0.98 0.03 95);
+}
+
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+.vignette {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 52%,
+    oklch(0.05 0.01 260 / 60%) 100%
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* More keyframes                                                      */
+/* ------------------------------------------------------------------ */
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 32s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee,
+  .animate-float-slow,
+  .animate-pulse-glow {
+    animation: none;
+  }
+}
+

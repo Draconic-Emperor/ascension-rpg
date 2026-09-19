@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
 import { Flame, LogOut, RotateCcw, ScrollText, Swords, Trophy, Zap } from "lucide-react";
-import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { toast } from "sonner";
+import { useCountUp } from "@/hooks/use-count-up";
 import { AchievementsPanel } from "@/components/AchievementsPanel";
 import { CharacterCreation } from "@/components/CharacterCreation";
 import { LeaderboardPanel } from "@/components/LeaderboardPanel";
@@ -26,6 +27,7 @@ import { Dialog,
 } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/use-auth";
 import {
+  activityHeatmap,
   addQuest,
   claimStreakReward,
   classMeta,
@@ -41,17 +43,21 @@ import {
   rollStreak,
   RANKS,
   type ClassId,
+  type Difficulty,
   type GameSave,
 } from "@/lib/game";
 
 type SaveAction =
   | { type: "replace"; save: GameSave }
+  | { type: "apply"; transform: (save: GameSave) => GameSave }
   | { type: "reset" };
 
-function saveReducer(_state: GameSave, action: SaveAction): GameSave {
+function saveReducer(state: GameSave, action: SaveAction): GameSave {
   switch (action.type) {
     case "replace":
       return action.save;
+    case "apply":
+      return action.transform(state);
     case "reset":
       return emptySave();
   }
@@ -59,7 +65,98 @@ function saveReducer(_state: GameSave, action: SaveAction): GameSave {
 
 interface LevelUpPayload {
   newLevel: number;
+  prevLevel: number;
   rankUp: string | null;
+}
+
+/** Cinematic level-up ceremony content (mounted only while the dialog is open). */
+function LevelUpCeremony({
+  payload,
+  onClose,
+}: {
+  payload: LevelUpPayload;
+  onClose: () => void;
+}) {
+  const [shownLevel, setShownLevel] = useState(payload.prevLevel);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setShownLevel(payload.newLevel);
+      return;
+    }
+    let raf = 0;
+    const start = performance.now();
+    const duration = 750;
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - t, 3);
+      setShownLevel(Math.round(payload.prevLevel + (payload.newLevel - payload.prevLevel) * eased));
+      if (t < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [payload.newLevel, payload.prevLevel]);
+
+  const rankBadge = payload.rankUp
+    ? RANKS.find((r) => r.name === payload.rankUp)?.badgeClass
+    : null;
+
+  return (
+    <motion.div
+      initial={{ scale: 0.7, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ type: "spring", stiffness: 260, damping: 18 }}
+      className="relative"
+    >
+      {/* Radial burst rings */}
+      {[0, 1].map((i) => (
+        <motion.span
+          key={i}
+          aria-hidden
+          initial={{ scale: 0.4, opacity: 0.7 }}
+          animate={{ scale: 2.4, opacity: 0 }}
+          transition={{ duration: 1.4, delay: i * 0.35, ease: "easeOut" }}
+          className="pointer-events-none absolute inset-0 m-auto size-24 rounded-full border-2 border-gold/50"
+        />
+      ))}
+      <div className="relative">
+        <div className="animate-pulse-glow mx-auto flex size-16 items-center justify-center rounded-full border-2 border-gold/60 bg-gold/15">
+          <Zap className="size-8 text-gold" />
+        </div>
+        <p className="font-display mt-4 text-xs font-bold tracking-[0.35em] text-azure-bright">
+          [ SYSTEM MESSAGE ]
+        </p>
+        <p className="font-display text-gradient-gold mt-2 text-3xl font-black text-shadow-gold">
+          LEVEL UP!
+        </p>
+        <p className="tnum mt-1 font-display text-5xl font-black text-gold-bright">
+          {shownLevel}
+        </p>
+        {rankBadge && payload.rankUp && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+          >
+            <p className="mt-3 text-[10px] font-bold tracking-[0.3em] text-muted-foreground">
+              RANK ADVANCEMENT
+            </p>
+            <span
+              className={`mt-2 inline-block rounded-md border px-4 py-1.5 font-display text-lg font-black tracking-[0.15em] uppercase ${rankBadge}`}
+            >
+              ⚔ {payload.rankUp} ⚔
+            </span>
+          </motion.div>
+        )}
+        <Button
+          onClick={onClose}
+          className="mt-5 w-full bg-gradient-to-r from-gold/90 via-gold-bright to-gold/90 font-bold text-background hover:opacity-95"
+        >
+          CONTINUE
+        </Button>
+      </div>
+    </motion.div>
+  );
 }
 
 export default function Dashboard() {
@@ -68,6 +165,15 @@ export default function Dashboard() {
   const [levelUp, setLevelUp] = useState<LevelUpPayload | null>(null);
   const [resetOpen, setResetOpen] = useState(false);
 
+  // Always-current handle on the save so pure transforms never race the
+  // reducer (e.g. an action fired between dispatch and re-render).
+  const saveRef = useRef(save);
+  saveRef.current = save;
+  const apply = useCallback(
+    (transform: (save: GameSave) => GameSave) => dispatch({ type: "apply", transform }),
+    [],
+  );
+
   // Persist every save change.
   useEffect(() => {
     persistSave(save);
@@ -75,7 +181,7 @@ export default function Dashboard() {
 
   // Daily login streak — runs once per app open.
   useEffect(() => {
-    const { save: rolled, event } = rollStreak(save);
+    const { save: rolled, event } = rollStreak(saveRef.current);
     if (event === null) return;
     dispatch({ type: "replace", save: rolled });
     if (event === "started") {
@@ -94,50 +200,94 @@ export default function Dashboard() {
   const rank = useMemo(() => rankForLevel(level.level), [level.level]);
   const meta = save.profile ? classMeta(save.profile.classId) : null;
   const ClassIcon = meta?.icon;
+  const animatedLevel = useCountUp(level.level, 650);
+  const animatedXp = useCountUp(save.xp, 900);
+  const activity = useMemo(() => activityHeatmap(save, 35), [save]);
+  const activityToday = activity[activity.length - 1];
 
   const handleCreate = useCallback(
     (name: string, classId: ClassId) => {
-      dispatch({ type: "replace", save: createProfile(loadSave(), name, classId) });
+      apply((s) => createProfile(s, name, classId));
       toast.success("[SYSTEM] You have awakened. Welcome, " + name.trim());
     },
-    [],
+    [apply],
   );
 
-  const handleAddQuest = useCallback((title: string, difficulty: Parameters<typeof addQuest>[2]) => {
-    dispatch({ type: "replace", save: addQuest(loadSave(), title, difficulty) });
-    toast.info("[SYSTEM] Quest registered");
-  }, []);
+  const handleAddQuest = useCallback(
+    (title: string, difficulty: Difficulty) => {
+      apply((s) => addQuest(s, title, difficulty));
+      toast.info("[SYSTEM] Quest registered");
+    },
+    [apply],
+  );
 
-  const handleComplete = useCallback((questId: string) => {
-    const result = completeQuestToday(loadSave(), questId);
-    if (!result) return;
-    dispatch({ type: "replace", save: result.save });
-    toast.success(`[SYSTEM] Quest cleared +${result.xpGained} XP`);
-    if (result.rankUp) {
-      setLevelUp({ newLevel: result.newLevel, rankUp: result.rankUp });
-    } else if (result.levelsGained > 0) {
-      setLevelUp({ newLevel: result.newLevel, rankUp: null });
-    }
-  }, []);
-
-  const handleClaim = useCallback((day: number) => {
-    const result = claimStreakReward(loadSave(), day);
-    if (result.status === "granted") {
-      dispatch({ type: "replace", save: result.save });
-      toast.success(`[SYSTEM] Streak reward +${result.xpGained} XP`);
-      if (result.levelsGained > 0) {
-        setLevelUp({ newLevel: result.newLevel, rankUp: null });
+  const handleComplete = useCallback(
+    (questId: string) => {
+      const result = completeQuestToday(saveRef.current, questId);
+      if (!result) return;
+      apply(() => result.save);
+      toast.success(`[SYSTEM] Quest cleared +${result.xpGained} XP`);
+      if (result.rankUp) {
+        setLevelUp({
+          newLevel: result.newLevel,
+          prevLevel: result.newLevel - result.levelsGained,
+          rankUp: result.rankUp,
+        });
+      } else if (result.levelsGained > 0) {
+        setLevelUp({
+          newLevel: result.newLevel,
+          prevLevel: result.newLevel - result.levelsGained,
+          rankUp: null,
+        });
       }
-    } else if (result.status === "locked") {
-      toast.error("[SYSTEM] Reward still locked");
-    } else {
-      toast.info("[SYSTEM] Reward already claimed");
-    }
-  }, []);
+    },
+    [apply],
+  );
 
-  const handleRemove = useCallback((questId: string) => {
-    dispatch({ type: "replace", save: removeQuest(loadSave(), questId) });
-  }, []);
+  const handleClaim = useCallback(
+    (day: number) => {
+      const result = claimStreakReward(saveRef.current, day);
+      if (result.status === "granted") {
+        apply(() => result.save);
+        toast.success(`[SYSTEM] Streak reward +${result.xpGained} XP`);
+        if (result.levelsGained > 0) {
+          setLevelUp({
+            newLevel: result.newLevel,
+            prevLevel: result.newLevel - result.levelsGained,
+            rankUp: null,
+          });
+        }
+      } else if (result.status === "locked") {
+        toast.error("[SYSTEM] Reward still locked");
+      } else {
+        toast.info("[SYSTEM] Reward already claimed");
+      }
+    },
+    [apply],
+  );
+
+  const handleRemove = useCallback(
+    (questId: string) => {
+      const quest = saveRef.current.quests.find((q) => q.id === questId);
+      const index = saveRef.current.quests.findIndex((q) => q.id === questId);
+      apply((s) => removeQuest(s, questId));
+      if (quest) {
+        toast.info("[SYSTEM] Quest removed", {
+          action: {
+            label: "Undo",
+            onClick: () => {
+              apply((s) => {
+                const quests = [...s.quests];
+                quests.splice(Math.min(index, quests.length), 0, quest);
+                return { ...s, quests };
+              });
+            },
+          },
+        });
+      }
+    },
+    [apply],
+  );
 
   const handleReset = useCallback(() => {
     clearSave();
@@ -249,8 +399,8 @@ export default function Dashboard() {
                 {rank.name}
               </span>
               <p className="mt-1.5 flex items-baseline justify-end gap-1">
-                <span className="font-display text-2xl leading-none font-black text-gold-bright sm:text-3xl">
-                  {level.level}
+                <span className="tnum font-display text-2xl leading-none font-black text-gold-bright text-shadow-gold sm:text-3xl">
+                  {animatedLevel}
                 </span>
                 <span className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground">
                   LEVEL
@@ -274,8 +424,8 @@ export default function Dashboard() {
                 <span className="shimmer absolute inset-0 block" />
               </div>
             </div>
-            <p className="mt-1 text-right text-[10px] text-muted-foreground">
-              {xpPct}% to Level {level.level + 1} · {save.xp.toLocaleString()} total XP
+            <p className="tnum mt-1 text-right text-[10px] text-muted-foreground">
+              {xpPct}% to Level {level.level + 1} · {animatedXp.toLocaleString()} total XP
             </p>
           </div>
 
@@ -290,14 +440,63 @@ export default function Dashboard() {
                 className="rounded-lg border border-border/60 bg-background/40 px-2 py-2.5"
               >
                 <s.icon className="mx-auto size-3.5 text-muted-foreground" />
-                <p className="mt-1 text-sm font-black text-foreground sm:text-base">
-                  {s.value || "—"}
+                <p className="tnum mt-1 text-sm font-black text-foreground sm:text-base">
+                  {s.value}
                 </p>
                 <p className="text-[9px] font-bold tracking-[0.18em] text-muted-foreground">
                   {s.label}
                 </p>
               </div>
             ))}
+          </div>
+
+          {/* Activity record — 5-week heatmap */}
+          <div className="mt-5 border-t border-border/40 pt-4">
+            <div className="mb-2 flex items-center justify-between">
+              <p className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground">
+                ACTIVITY RECORD — 5 WEEKS
+              </p>
+              <div className="flex items-center gap-1 text-[9px] text-muted-foreground">
+                LOW
+                {[0, 1, 2, 3].map((l) => (
+                  <span
+                    key={l}
+                    className={`size-2 rounded-[2px] ${
+                      l === 0
+                        ? "bg-background/70 ring-1 ring-border/60"
+                        : l === 1
+                          ? "bg-gold/20"
+                          : l === 2
+                            ? "bg-gold/45"
+                            : "bg-gold/80"
+                    }`}
+                  />
+                ))}
+                HIGH
+              </div>
+            </div>
+            <div className="grid grid-flow-col grid-rows-7 gap-1">
+              {activity.map((day) => (
+                <div
+                  key={day.key}
+                  title={day.level === 0 ? "No activity" : `Activity level ${day.level}`}
+                  className={`size-2.5 rounded-[2px] transition-colors sm:size-3 ${
+                    day.level === 0
+                      ? "bg-background/70 ring-1 ring-border/50"
+                      : day.level === 1
+                        ? "bg-gold/20"
+                        : day.level === 2
+                          ? "bg-gold/45"
+                          : "bg-gold/80 shadow-[0_0_6px_-1px] shadow-gold/60"
+                  } ${day.key === "today" ? "ring-2 ring-gold/60 ring-offset-1 ring-offset-background" : ""}`}
+                />
+              ))}
+            </div>
+            <p className="mt-2 text-[10px] text-muted-foreground">
+              {activityToday && activityToday.level > 0
+                ? "Today's trial is underway. The System approves."
+                : "No record for today yet — clear a quest to mark the grid."}
+            </p>
           </div>
         </motion.section>
 
@@ -377,35 +576,9 @@ export default function Dashboard() {
             You reached level {levelUp?.newLevel}
             {levelUp?.rankUp ? ` and rank ${levelUp.rankUp}` : ""}.
           </DialogDescription>
-          <motion.div
-            initial={{ scale: 0.7, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: "spring", stiffness: 260, damping: 18 }}
-          >
-            <div className="mx-auto flex size-16 items-center justify-center rounded-full border-2 border-gold/60 bg-gold/15 animate-pulse-glow">
-              <Zap className="size-8 text-gold" />
-            </div>
-            <p className="font-display mt-4 text-xs font-bold tracking-[0.35em] text-azure-bright">
-              [ SYSTEM MESSAGE ]
-            </p>
-            <p className="font-display text-gradient-gold mt-2 text-3xl font-black text-shadow-gold">
-              LEVEL UP!
-            </p>
-            <p className="mt-2 text-sm text-foreground">
-              You reached <span className="font-bold text-gold">Level {levelUp?.newLevel}</span>
-            </p>
-            {levelUp?.rankUp && (
-              <p className="mt-3 rounded-md border border-gold/40 bg-gold/10 px-3 py-2 text-sm font-bold text-gold">
-                ⚔ RANK ADVANCEMENT — {levelUp.rankUp.toUpperCase()} ⚔
-              </p>
-            )}
-            <Button
-              onClick={() => setLevelUp(null)}
-              className="mt-5 w-full bg-gradient-to-r from-gold/90 via-gold-bright to-gold/90 font-bold text-background hover:opacity-95"
-            >
-              CONTINUE
-            </Button>
-          </motion.div>
+          {levelUp && (
+            <LevelUpCeremony payload={levelUp} onClose={() => setLevelUp(null)} />
+          )}
         </DialogContent>
       </Dialog>
     </main>

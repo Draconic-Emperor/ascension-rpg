@@ -9,8 +9,13 @@ export function RequireAuth({ children }: { children: ReactNode }) {
 
   if (isLoading) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-background">
-        <Loader2 className="size-6 animate-spin text-muted-foreground" />
+      <main className="grid-bg flex min-h-screen flex-col items-center justify-center gap-3 bg-background">
+        <div className="animate-pulse-glow flex size-12 items-center justify-center rounded-lg border border-gold/40 bg-gold/10">
+          <Loader2 className="size-5 animate-spin text-gold" />
+        </div>
+        <p className="font-display text-xs tracking-[0.3em] text-muted-foreground">
+          VERIFYING HUNTER REGISTRY…
+        </p>
       </main>
     );
   }

@@ -49,6 +49,10 @@ export function CharacterCreation({ onCreate }: CharacterCreationProps) {
             id="hunter-name"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && canCreate) onCreate(name, selected);
+            }}
+            autoFocus
             placeholder="e.g. Jin-Woo"
             maxLength={24}
             className="mt-2 h-11 border-gold/20 bg-background/60 text-base focus-visible:ring-gold/40"

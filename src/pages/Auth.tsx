@@ -1,3 +1,4 @@
+import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -13,10 +14,9 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-
-import { useAuth } from "@/hooks/use-auth";
+import EmberField from "@/components/EmberField";
 import logo from "@/assets/logo.svg";
-import { ArrowRight, Loader2, Mail, UserX } from "lucide-react";
+import { ArrowRight, Loader2, Mail, Sparkles, UserX } from "lucide-react";
 import { Suspense, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 
@@ -52,6 +52,7 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
       navigate(redirect);
     }
   }, [authLoading, isAuthenticated, navigate, redirect]);
+
   const handleEmailSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
@@ -79,16 +80,11 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
     try {
       const formData = new FormData(event.currentTarget);
       await signIn("email-otp", formData);
-
-      console.log("signed in");
-
       navigate(redirect);
     } catch (error) {
       console.error("OTP verification error:", error);
-
       setError("The verification code you entered is incorrect.");
       setIsLoading(false);
-
       setOtp("");
     }
   };
@@ -97,47 +93,53 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
     setIsLoading(true);
     setError(null);
     try {
-      console.log("Attempting anonymous sign in...");
       await signIn("anonymous");
-      console.log("Anonymous sign in successful");
       navigate(redirect);
     } catch (error) {
       console.error("Guest login error:", error);
-      console.error("Error details:", JSON.stringify(error, null, 2));
-      setError(`Failed to sign in as guest: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      setError(
+        `Failed to sign in as guest: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="grid-bg relative flex min-h-screen flex-col overflow-hidden">
+      <EmberField intensity={0.7} />
+      <div
+        aria-hidden
+        className="pointer-events-none fixed -top-32 left-1/2 z-0 size-[420px] -translate-x-1/2 rounded-full bg-gold/10 blur-[110px]"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none fixed bottom-[-100px] right-[-120px] z-0 size-[340px] rounded-full bg-crimson/10 blur-[110px]"
+      />
 
-      
-      {/* Auth Content */}
-      <div className="flex-1 flex items-center justify-center">
-        <div className="flex items-center justify-center h-full flex-col">
+      <div className="relative z-10 flex flex-1 items-center justify-center px-4 py-10">
         <Card className="panel panel-glow corner-frame min-w-[350px] pb-0 border shadow-md">
           {step === "signIn" ? (
             <>
               <CardHeader className="text-center">
-              <div className="flex justify-center">
-                    <img
-                      src={logo}
-                      alt="Lock Icon"
-                      width={64}
-                      height={64}
-                      className="rounded-lg mb-4 mt-4 cursor-pointer"
-                      onClick={() => navigate("/")}
-                    />
-                  </div>
-                <CardTitle className="font-display text-xl tracking-wide">Get Started</CardTitle>
+                <div className="flex justify-center">
+                  <img
+                    src={logo}
+                    alt="Ascension"
+                    width={64}
+                    height={64}
+                    className="mt-4 mb-4 cursor-pointer rounded-lg"
+                    onClick={() => navigate("/")}
+                  />
+                </div>
+                <CardTitle className="font-display text-xl tracking-wide">
+                  The System Awaits
+                </CardTitle>
                 <CardDescription>
-                  Enter your email to log in or sign up
+                  Enter your email to begin the ascent
                 </CardDescription>
               </CardHeader>
               <form onSubmit={handleEmailSubmit}>
                 <CardContent>
-                  
                   <div className="relative flex items-center gap-2">
                     <div className="relative flex-1">
                       <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -164,9 +166,9 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                     </Button>
                   </div>
                   {error && (
-                    <p className="mt-2 text-sm text-red-500">{error}</p>
+                    <p className="mt-2 text-sm text-crimson">{error}</p>
                   )}
-                  
+
                   <div className="mt-4">
                     <div className="relative">
                       <div className="absolute inset-0 flex items-center">
@@ -178,16 +180,16 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                         </span>
                       </div>
                     </div>
-                    
+
                     <Button
                       type="button"
                       variant="outline"
-                      className="w-full mt-4"
+                      className="mt-4 w-full"
                       onClick={handleGuestLogin}
                       disabled={isLoading}
                     >
                       <UserX className="mr-2 h-4 w-4" />
-                      Continue as Guest
+                      Enter as an Unregistered Hunter
                     </Button>
                   </div>
                 </CardContent>
@@ -195,10 +197,13 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
             </>
           ) : (
             <>
-              <CardHeader className="text-center mt-4">
-                <CardTitle>Check your email</CardTitle>
+              <CardHeader className="mt-4 text-center">
+                <div className="mx-auto mb-2 flex size-10 items-center justify-center rounded-full border border-gold/30 bg-gold/10">
+                  <Sparkles className="size-4.5 text-gold" />
+                </div>
+                <CardTitle className="font-display">Verify Identity</CardTitle>
                 <CardDescription>
-                  We've sent a code to {step.email}
+                  A system code was sent to {step.email}
                 </CardDescription>
               </CardHeader>
               <form onSubmit={handleOtpSubmit}>
@@ -214,7 +219,6 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                       disabled={isLoading}
                       onKeyDown={(e) => {
                         if (e.key === "Enter" && otp.length === 6 && !isLoading) {
-                          // Find the closest form and submit it
                           const form = (e.target as HTMLElement).closest("form");
                           if (form) {
                             form.requestSubmit();
@@ -230,15 +234,15 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                     </InputOTP>
                   </div>
                   {error && (
-                    <p className="mt-2 text-sm text-red-500 text-center">
+                    <p className="mt-2 text-center text-sm text-crimson">
                       {error}
                     </p>
                   )}
-                  <p className="text-sm text-muted-foreground text-center mt-4">
+                  <p className="mt-4 text-center text-sm text-muted-foreground">
                     Didn't receive a code?{" "}
                     <Button
                       variant="link"
-                      className="p-0 h-auto"
+                      className="h-auto p-0"
                       onClick={() => setStep("signIn")}
                     >
                       Try again
@@ -277,19 +281,18 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
             </>
           )}
 
-          <div className="py-4 px-6 text-xs text-center text-muted-foreground bg-muted border-t rounded-b-lg">
+          <div className="rounded-b-lg border-t bg-muted px-6 py-4 text-center text-xs text-muted-foreground">
             Secured by{" "}
             <a
               href="https://freebuff.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="underline hover:text-primary transition-colors"
+              className="transition-colors underline hover:text-primary"
             >
               freebuff.com
             </a>
           </div>
         </Card>
-        </div>
       </div>
     </div>
   );

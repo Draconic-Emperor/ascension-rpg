@@ -15,11 +15,16 @@ const AuthPage = lazy(() => import("./pages/Auth.tsx"));
 const Dashboard = lazy(() => import("./pages/Dashboard.tsx"));
 const NotFound = lazy(() => import("./pages/NotFound.tsx"));
 
-// Simple loading fallback for route transitions
+// Themed loading fallback for route transitions
 function RouteLoading() {
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="animate-pulse text-muted-foreground">Loading...</div>
+    <div className="grid-bg flex min-h-screen flex-col items-center justify-center gap-3">
+      <div className="animate-pulse-glow flex size-12 items-center justify-center rounded-lg border border-gold/40 bg-gold/10">
+        <span className="font-display text-lg font-black text-gold">A</span>
+      </div>
+      <p className="font-display text-xs tracking-[0.3em] text-muted-foreground">
+        CONNECTING TO THE SYSTEM…
+      </p>
     </div>
   );
 }
